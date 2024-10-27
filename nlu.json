@@ -23,15 +23,36 @@
     }
   },
   "intents" : [ {
-    "path" : "/пока",
+    "path" : "/hotel_book",
     "enabled" : true,
     "shared" : false,
     "phrases" : [ {
-      "text" : "пока"
+      "text" : "мне нужно место чтобы остановиться @duckling.date"
+    }, {
+      "text" : "номера в @venue-accomodation-chain"
+    }, {
+      "text" : "@map_sort отели в @pymorphy.geox"
+    }, {
+      "text" : "забронировать  @map-sort отели @map-sort"
+    }, {
+      "text" : "@star @venue-accomodation-type @pymorphy.geox"
     } ],
     "classificationRules" : {
       "refs" : [ ]
     },
+    "patterns" : [ ],
+    "slots" : [ {
+      "name" : "date",
+      "entity" : "duckling.date",
+      "required" : true,
+      "prompts" : [ "Когда хотите забронировать?", "С какого числа?" ],
+      "array" : false
+    }, {
+      "name" : "hotelType",
+      "entity" : "venue-accomodation-type",
+      "required" : true,
+      "prompts" : [ "Какой тип места?" ]
+    } ],
     "priority" : 0
   }, {
     "path" : "/привет",
@@ -43,6 +64,22 @@
     "classificationRules" : {
       "refs" : [ ]
     },
+    "priority" : 0
+  }, {
+    "path" : "/hotel_book_context",
+    "enabled" : true,
+    "shared" : false,
+    "phrases" : [ {
+      "text" : "новое бронирование сейчас"
+    }, {
+      "text" : "бронирование сейчас пожалуйста"
+    }, {
+      "text" : "снять номер в отеле"
+    } ],
+    "classificationRules" : {
+      "refs" : [ ]
+    },
+    "patterns" : [ ],
     "priority" : 0
   } ],
   "entities" : [ {
@@ -59,7 +96,35 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "лучший", "классный", "великолепный", "шикарный", "хороший" ],
+      "value" : "{\n  \"value\": \"лучший\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "лучшее совпадение" ],
+      "value" : "{\n  \"value\": \"лучшее совпадение\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "лучшая цена", "дешевый", "самый дешевый", "менее дорогой" ],
+      "value" : "{\n  \"value\": \"самый дешевый\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "вдоль моего маршрута", "здесь", "вокруг меня", "вокруг моего района", "в моем пункте назначения", "рядом", "рядом со мной", "близко к моему району", "ближайший", "ближайший ко мне", "немедленно", "тут", "в моем местонахождении", "в моем районе", "в этом район", "возле этого района", "недалеко отсюда", "по дороге", "этот район", "очень близко" ],
+      "value" : "{\n  \"value\": \"ближайший\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "в моём городе" ],
+      "value" : "{\n  \"value\": \"в моём городе\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "дорогой", "самый дорогой" ],
+      "value" : "{\n  \"value\": \"дорогой\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "бесплатный" ],
+      "value" : "{\n  \"value\": \"бесплатный\"\n}"
+    } ]
   }, {
     "entity" : {
       "name" : "star",
@@ -74,7 +139,31 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "2", "2 или больше", "две звезды", "две", "две или больше звёзд", "двухзвездочный" ],
+      "value" : "{\n  \"value\": \"2\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "4", "4 или больше", "четыре звезды", "четыре", "четыре или больше звезд", "трехзвездочный" ],
+      "value" : "{\n  \"value\": \"4\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "лучший рейтинг", "самый высокий рейтинг" ],
+      "value" : "{\n  \"value\": \"лучший рейтинг\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "1", "1 или больше", "одна звезда", "одна", "одна или больше звезд", "однозвездочный" ],
+      "value" : "{\n  \"value\": \"1\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "3", "3 или больше", "три звезды", "три", "три или больше звезд", "трехзвездочный" ],
+      "value" : "{\n  \"value\": \"3\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "5", "5 или больше", "пять звезд", "пять", " пять или больше звезд", "пятизвездочный", "лучший рейтинг", "лучше оцененный" ],
+      "value" : "{\n  \"value\": \"5\"\n}"
+    } ]
   }, {
     "entity" : {
       "name" : "venue-accomodation-type",
@@ -89,22 +178,35 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
-  }, {
-    "entity" : {
-      "name" : "venue-accomodation-chain",
-      "enabled" : true,
-      "shared" : false,
-      "type" : "annotation",
-      "priority" : 1,
-      "noSpelling" : true,
-      "noMorph" : false,
-      "phoneticSearch" : false,
-      "fuzzySearch" : false,
-      "client" : false,
-      "hidden" : false
-    },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "шале", "коттетдж", "коттетджи" ],
+      "value" : "{\n  \"value\": \"коттетж\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "курорт", "пляжный курорт", "морской курорт" ],
+      "value" : "{\n  \"value\": \"курорт\"\n}\n"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "апартаменты" ],
+      "value" : "{\n    \"value\": \"апартаменты\"\n} "
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "отель", "отели" ],
+      "value" : "{\n  \"value\": \"отель\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "хостел", "хостелы" ],
+      "value" : "{\n  \"value\": \"хостел\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "мотель", "мотели" ],
+      "value" : "{\n  \"value\": \"мотель\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "лыжный курорт" ],
+      "value" : "{\n  \"value\": \"лыжный курорт\"\n}"
+    } ]
   }, {
     "entity" : {
       "name" : "venue-facility",
@@ -119,7 +221,63 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "салон красоты" ],
+      "value" : "{\"value\":\"салон\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "доставка" ],
+      "value" : "{\n  \"value\": \"доставка\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "в помещении" ],
+      "value" : "{\"value\":\"помещение\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "интернет", "доступ к интернету", "бесплатный интернет" ],
+      "value" : "{\"value\":\"интернет\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "номер для некурящих" ],
+      "value" : "{\n  \"value\": \"номер\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "внешняя площадка" ],
+      "value" : "{\"value\":\"площадка\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "парковка", "доступная парковка", "бесплатная парковка", "парковочный участок" ],
+      "value" : "{\"value\":\"парковка\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "дружелюбно к питомцам", "дружелюбно к кошкам", "дружелюбно к собакам" ],
+      "value" : "{\"value\":\"дружелюбно к питомцам\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "бассейн", "плавательный бассейн" ],
+      "value" : "{\"value\":\"бассейн\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "быстрое обслуживание", "быстрое служение" ],
+      "value" : "{\"value\":\"обслуживание\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "курящий номер" ],
+      "value" : "{\"value\":\"курящий номер\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "спа" ],
+      "value" : "{\"value\":\"спа\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "трансфер", "трансферное обслуживание", "транспортировка" ],
+      "value" : "{\"value\":\"трансфер\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "wi-fi", "доступ к wi-fi", "бесплатный wi-fi", "wi-fi соединение" ],
+      "value" : "{\"value\":\"wi-fi\"}"
+    } ]
   }, {
     "entity" : {
       "name" : "room-facility",
@@ -134,7 +292,31 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "кондиционер" ],
+      "value" : "{\n  \"value\": \"кондиционер\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "кондиционер", "кондиционирование", "управление воздухом" ],
+      "value" : "{\n  \"value\": \"управление воздухом\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "хороший вид", "хороший вид из окна" ],
+      "value" : "{\n  \"value\": \"хороший вид\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "терраса", "балкон", "веранда" ],
+      "value" : "{\n  \"value\": \"терраса\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "стиральная машина", "прачечная" ],
+      "value" : "{\n  \"value\": \"стиральная машина\"\n}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "фен" ],
+      "value" : "{\n  \"value\": \"фен\"\n}"
+    } ]
   }, {
     "entity" : {
       "name" : "venue-accomodation-title",
@@ -149,9 +331,1208 @@
       "client" : false,
       "hidden" : false
     },
-    "records" : [ ]
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "1717 Broadway", "1717 Бродвей" ],
+      "value" : "{\"value\":\"1717 Broadway\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "21c Museum Hotel", "21с Музей Хотел" ],
+      "value" : "{\"value\":\"21c Museum Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "300 East Pratt Street", "300 Ист Пратт Стрит" ],
+      "value" : "{\"value\":\"300 East Pratt Street\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "350 West Mart Center", "350 Уэст Март Центр" ],
+      "value" : "{\"value\":\"350 West Mart Center\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "41 Hotel", "41 Хотел" ],
+      "value" : "{\"value\":\"41 Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "45 Park Lane", "45 Парк Лейн" ],
+      "value" : "{\"value\":\"45 Park Lane\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "51 Buckingham Gate", "51 Букенгем Гейт" ],
+      "value" : "{\"value\":\"51 Buckingham Gate\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "6 Times Square", "6 Таймс Сквер" ],
+      "value" : "{\"value\":\"6 Times Square\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "6th Avenue Hotel-Windsor Hotel", "6 Авеню Хотел-Виндзор Хотел" ],
+      "value" : "{\"value\":\"6th Avenue Hotel-Windsor Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "ACH Casino Resort", "ACH Казино Резорт" ],
+      "value" : "{\"value\":\"ACH Casino Resort\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ace Hotel", "Эйс Хотел" ],
+      "value" : "{\"value\":\"Ace Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adams-Ryan House", "Адамс-Райан Хаус" ],
+      "value" : "{\"value\":\"Adams-Ryan House\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adirondack Hotel", "Адирандак Хотел" ],
+      "value" : "{\"value\":\"Adirondack Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adirondak Loj", "Адирандак Лож" ],
+      "value" : "{\"value\":\"Adirondak Loj\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adler Hotel", "Адлер Хотел" ],
+      "value" : "{\"value\":\"Adler Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Admiral Fitzroy Inn", "Адмирал Фитцрой Инн" ],
+      "value" : "{\"value\":\"Admiral Fitzroy Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adoba Hotel Dearborn Detroit", "Адоба Хотел Дирборн Детройт" ],
+      "value" : "{\"value\":\"Adoba Hotel Dearborn Detroit\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adolphus Hotel", "Адольфус Хотел" ],
+      "value" : "{\"value\":\"Adolphus Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Affinia Hotels", "Аффиния Хотелс" ],
+      "value" : "{\"value\":\"Affinia Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ahwahnee Hotel", "Авахьни Хотел" ],
+      "value" : "{\"value\":\"Ahwahnee Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ala Moana Hotel", "Ала Моана Хотел" ],
+      "value" : "{\"value\":\"Ala Moana Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aladdin Hotel & Casino", "Аладдин Хотел & Казино" ],
+      "value" : "{\"value\":\"Aladdin Hotel & Casino\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alaska Building", "Аляска Билдинг" ],
+      "value" : "{\"value\":\"Alaska Building\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Albert Pike Residence Hotel", "Альберт Пайк Резиденс Хотел" ],
+      "value" : "{\"value\":\"Albert Pike Residence Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alden Houston", "Олден Хьюстон" ],
+      "value" : "{\"value\":\"Alden Houston\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alexander Young Building", "Александер Янг Билдинг" ],
+      "value" : "{\"value\":\"Alexander Young Building\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alexandru villa", "Александру Вилла" ],
+      "value" : "{\"value\":\"Alexandru villa\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Algonquin Hotel", "Алгонкин Хотел" ],
+      "value" : "{\"value\":\"Algonquin Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aliante Station", "Алиант Стейшн" ],
+      "value" : "{\"value\":\"Aliante Station\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Allen Hotel", "Аллен Хотел" ],
+      "value" : "{\"value\":\"Allen Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Allentown Comfort Suites", "Аллентаун Комфорт Сьютс" ],
+      "value" : "{\"value\":\"Allentown Comfort Suites\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Allerton Hotel", "Аллертон Хотел" ],
+      "value" : "{\"value\":\"Allerton Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Allerton Hotel for Women", "Аллертон Хотел для Женщин" ],
+      "value" : "{\"value\":\"Allerton Hotel for Women\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aloft Washington National Harbor", "Аллофт Вашингтон Нэшнл Харбор" ],
+      "value" : "{\"value\":\"Aloft Washington National Harbor\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Altamont Hotel", "Алтамонт Хотел" ],
+      "value" : "{\"value\":\"Altamont Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ambassador", "Амбассадор" ],
+      "value" : "{\"value\":\"Ambassador\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ambassador Hotel", "Амбассадор Хотел" ],
+      "value" : "{\"value\":\"Ambassador Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "American Hotel", "Американ Хотел" ],
+      "value" : "{\"value\":\"American Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Americus Hotel", "Америкуc Хотел" ],
+      "value" : "{\"value\":\"Americus Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ameristar Casino Kansas City", "Америстар Казино Канзас Сити" ],
+      "value" : "{\"value\":\"Ameristar Casino Kansas City\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Amway Grand Plaza Hotel", "Амвей Гранд Плаза Хотел" ],
+      "value" : "{\"value\":\"Amway Grand Plaza Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Andaluz Hotel", "Андалуз Хотел" ],
+      "value" : "{\"value\":\"Andaluz Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Andaz Liverpool Street London Hotel", "Андез Ливерпуль Стрит Лондон Хотел" ],
+      "value" : "{\"value\":\"Andaz Liverpool Street London Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Andrew Johnson Building", "Эндрю Джонсон Билдинг" ],
+      "value" : "{\"value\":\"Andrew Johnson Building\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Angels Hotel", "Энджелс Хотел" ],
+      "value" : "{\"value\":\"Angels Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ansorge Hotel", "Ансorge Хотел" ],
+      "value" : "{\"value\":\"Ansorge Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Anthony House", "Энтони Хаус" ],
+      "value" : "{\"value\":\"Anthony House\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Antlers Hilton Hotel", "Антлерс Хилтон Хотел" ],
+      "value" : "{\"value\":\"Antlers Hilton Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Apple Farm Inn", "Эппл Фарм Инн" ],
+      "value" : "{\"value\":\"Apple Farm Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Apple Valley Inn", "Эппл Вэлли Инн" ],
+      "value" : "{\"value\":\"Apple Valley Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aqua", "Аква" ],
+      "value" : "{\"value\":\"Aqua\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aquila Court Building", "Аквила Корт Билдинг" ],
+      "value" : "{\"value\":\"Aquila Court Building\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arcade Hotel", "Аркейд Хотел" ],
+      "value" : "{\"value\":\"Arcade Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arctic Building", "Арктик Билдинг" ],
+      "value" : "{\"value\":\"Arctic Building\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aria Resort & Casino", "Ария Резорт & Казино" ],
+      "value" : "{\"value\":\"Aria Resort & Casino\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arizona Biltmore Hotel", "Аризона Билтмор Хотел" ],
+      "value" : "{\"value\":\"Arizona Biltmore Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arizona Charlie's Boulder", "Аризона Чарли Болдер" ],
+      "value" : "{\"value\":\"Arizona Charlie's Boulder\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arizona Charlie's Decatur", "Аризона Чарли Декейтер" ],
+      "value" : "{\"value\":\"Arizona Charlie's Decatur\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arlington Hotel", "Арлингтон Хотел" ],
+      "value" : "{\"value\":\"Arlington Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arminius Hotel", "Арминус Хотел" ],
+      "value" : "{\"value\":\"Arminius Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arthur Tavern", "Артур Таверн" ],
+      "value" : "{\"value\":\"Arthur Tavern\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ashland Springs Hotel", "Эшленд Спрингс Хотел" ],
+      "value" : "{\"value\":\"Ashland Springs Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Astor House", "Астор Хаус" ],
+      "value" : "{\"value\":\"Astor House\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Astor on the Lake", "Астор на Озере" ],
+      "value" : "{\"value\":\"Astor on the Lake\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Athena", "Афина" ],
+      "value" : "{\"value\":\"Athena\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atheneum Suite Hotel Detroit", "Афинеум Сьют Хотел Детройт" ],
+      "value" : "{\"value\":\"Atheneum Suite Hotel Detroit\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atlanta Biltmore Hotel and Biltmore Apartments", "Атланта Билтмор Хотел и Билтмор Апартменты" ],
+      "value" : "{\"value\":\"Atlanta Biltmore Hotel and Biltmore Apartments\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atlanta Marriott Marquis", "Атланта Мариотт Маркиз" ],
+      "value" : "{\"value\":\"Atlanta Marriott Marquis\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atlantic Hotel", "Атлантик Хотел" ],
+      "value" : "{\"value\":\"Atlantic Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atlantis Casino Resort", "Атлантис Казино Резорт" ],
+      "value" : "{\"value\":\"Atlantis Casino Resort\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aulani", "Аулани" ],
+      "value" : "{\"value\":\"Aulani\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aurora Hotel", "Аврора Хотел" ],
+      "value" : "{\"value\":\"Aurora Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aurora Inn", "Аврора Инн" ],
+      "value" : "{\"value\":\"Aurora Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Avalon Music", "Авало́н Мьюзик" ],
+      "value" : "{\"value\":\"Avalon Music\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Avon Inn", "Эйвон Инн" ],
+      "value" : "{\"value\":\"Avon Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aztec Auto Court", "Азтек Авто Корт" ],
+      "value" : "{\"value\":\"Aztec Auto Court\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aztec Hotel", "Азтек Хотел" ],
+      "value" : "{\"value\":\"Aztec Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bacon Hotel", "Бекон Хотел" ],
+      "value" : "{\"value\":\"Bacon Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bagg's Hotel", "Бэггс Хотел" ],
+      "value" : "{\"value\":\"Bagg's Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Baglioni Hotel", "Баглиони Хотел" ],
+      "value" : "{\"value\":\"Baglioni Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Balboa Bay Club & Resort", "Балбоа Бэй Клаб & Резорт" ],
+      "value" : "{\"value\":\"Balboa Bay Club & Resort\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Balboa Inn", "Балбоа Инн" ],
+      "value" : "{\"value\":\"Balboa Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Balch Hotel", "Бэлч Хотел" ],
+      "value" : "{\"value\":\"Balch Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bally's Atlantic City", "Балли Атлантик Сити" ],
+      "value" : "{\"value\":\"Bally's Atlantic City\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bally's Casino Tunica", "Балли Казино Туника" ],
+      "value" : "{\"value\":\"Bally's Casino Tunica\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bally's Las Vegas", "Балли Лас Вегас" ],
+      "value" : "{\"value\":\"Bally's Las Vegas\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Baltimore Marriott Waterfront Hotel" ],
+      "value" : "87"
+    } ]
+  }, {
+    "entity" : {
+      "name" : "venue-accomodation-chain",
+      "enabled" : true,
+      "shared" : false,
+      "type" : "annotation",
+      "priority" : 1,
+      "noSpelling" : true,
+      "noMorph" : false,
+      "phoneticSearch" : false,
+      "fuzzySearch" : false,
+      "client" : false,
+      "hidden" : false
+    },
+    "records" : [ {
+      "type" : "synonyms",
+      "rule" : [ "Brown Palace Hotel", "Браун Пэлас Хотел" ],
+      "value" : "{\"value\":\"Brown Palace Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Budget Host", "Баджет Хост" ],
+      "value" : "{\"value\":\"Budget Host\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cachet Hotel Group", "Каше Хотел Групп" ],
+      "value" : "{\"value\":\"Cachet Hotel Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Calvi France", "Кальви Франс" ],
+      "value" : "{\"value\":\"Calvi France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Canadian National Hotels", "Кэнидиан Нэшнл Хотелс" ],
+      "value" : "{\"value\":\"Canadian National Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Canalta Hotels", "Канальта Хотелс" ],
+      "value" : "{\"value\":\"Canalta Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cancun Mexico", "Канкун Мексико" ],
+      "value" : "{\"value\":\"Cancun Mexico\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cannes France", "Канн Франс" ],
+      "value" : "{\"value\":\"Cannes France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Carlson Rezidor Hotel Group", "Карлсон Резидор Хотел Групп" ],
+      "value" : "{\"value\":\"Carlson Rezidor Hotel Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Casa Monica Hotel", "Каса Моника Хотел" ],
+      "value" : "{\"value\":\"Casa Monica Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Center Parcs", "Центр Паркс" ],
+      "value" : "{\"value\":\"Center Parcs\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cham Palaces and Hotels", "Шам Пэласез энд Хотелс" ],
+      "value" : "{\"value\":\"Cham Palaces and Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Chamonix France", "Шамони Франс" ],
+      "value" : "{\"value\":\"Chamonix France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Champneys", "Чемпниз" ],
+      "value" : "{\"value\":\"Champneys\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Chez Hotels", "Шез Хотелс" ],
+      "value" : "{\"value\":\"Chez Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Choice Hotels", "Чойс Хотелс" ],
+      "value" : "{\"value\":\"Choice Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "CitizenM", "СитизенМ" ],
+      "value" : "{\"value\":\"CitizenM\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Clarion Hotels", "Кларион Хотелс" ],
+      "value" : "{\"value\":\"Clarion Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Classic Hotels & Resorts", "Классик Хотелс энд Резортс" ],
+      "value" : "{\"value\":\"Classic Hotels & Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Club Mahindra Holidays", "Клаб Махиндра Холидейс" ],
+      "value" : "{\"value\":\"Club Mahindra Holidays\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cobblestone Hotels", "Кобблстоун Хотелс" ],
+      "value" : "{\"value\":\"Cobblestone Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Compagnie Internationale des Grands Hotels", "Компани Интернасьональ де Грандс Хотелс" ],
+      "value" : "{\"value\":\"Compagnie Internationale des Grands Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Conrad Dubai", "Конрад Дубай" ],
+      "value" : "{\"value\":\"Conrad Dubai\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Conrad London St James", "Конрад Лондон Сент Джеймс" ],
+      "value" : "{\"value\":\"Conrad London St James\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Corinthia Hotels International", "Коринтия Хотелс Интернэшнл" ],
+      "value" : "{\"value\":\"Corinthia Hotels International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cosmopolitan of Las Vegas", "Космополитан оф Лас Вегас" ],
+      "value" : "{\"value\":\"Cosmopolitan of Las Vegas\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Country Inns and Suites", "Кантри Иннс энд Сьютс" ],
+      "value" : "{\"value\":\"Country Inns and Suites\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Couples Resorts", "Каплз Резортс" ],
+      "value" : "{\"value\":\"Couples Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Courtyard by Marriott", "Кортъярд бай Марриотт" ],
+      "value" : "{\"value\":\"Courtyard by Marriott\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Crest Hotels", "Крест Хотелс" ],
+      "value" : "{\"value\":\"Crest Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "21c Museum Hotels", "21с Музеум Хотелс" ],
+      "value" : "{\"value\":\"21c Museum Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "AC Hotels", "ЭйСи Хотелс" ],
+      "value" : "{\"value\":\"AC Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "AMResorts", "АМРесортс" ],
+      "value" : "{\"value\":\"AMResorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Abu Dhabi National Hotels", "Абу Даби Нэшинал Хотелс" ],
+      "value" : "{\"value\":\"Abu Dhabi National Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "AccorHotels", "АккорХотелс" ],
+      "value" : "{\"value\":\"AccorHotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ace Hotel", "Эйс Хотел" ],
+      "value" : "{\"value\":\"Ace Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Adagio", "Адажио" ],
+      "value" : "{\"value\":\"Adagio\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Advena Hotels", "Адвена Хотелс" ],
+      "value" : "{\"value\":\"Advena Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aerowisata", "Аэровисата" ],
+      "value" : "{\"value\":\"Aerowisata\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Affinia Hotel Collection", "Аффиния Хотел Коллекшн" ],
+      "value" : "{\"value\":\"Affinia Hotel Collection\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Affinia Hotels", "Аффиния Хотелс" ],
+      "value" : "{\"value\":\"Affinia Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Agadir Morocco", "Агадир Марокко" ],
+      "value" : "{\"value\":\"Agadir Morocco\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aime France", "Эм Франс" ],
+      "value" : "{\"value\":\"Aime France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aitken Spence", "Айткен Спенс" ],
+      "value" : "{\"value\":\"Aitken Spence\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ajaccio France", "Аяччо Франс" ],
+      "value" : "{\"value\":\"Ajaccio France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alamo Plaza Hotel Courts", "Аламо Плаза Хотел Кортс" ],
+      "value" : "{\"value\":\"Alamo Plaza Hotel Courts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Allegro Resorts Corporation", "Аллегро Резортс Корпорэйшн" ],
+      "value" : "{\"value\":\"Allegro Resorts Corporation\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aloft Hotels", "Алофт Хотелс" ],
+      "value" : "{\"value\":\"Aloft Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Alpe d Huez France", "Альп д Юэз Франс" ],
+      "value" : "{\"value\":\"Alpe d Huez France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aman Resorts", "Аман Резортс" ],
+      "value" : "{\"value\":\"Aman Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Amari Hotels and Resorts", "Амари Хотелс энд Резортс" ],
+      "value" : "{\"value\":\"Amari Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ambassador Hotel", "Амбассадор Хотел" ],
+      "value" : "{\"value\":\"Ambassador Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "AmeriHost Inn", "АмериХост Инн" ],
+      "value" : "{\"value\":\"AmeriHost Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "AmericInn", "АмерикИнн" ],
+      "value" : "{\"value\":\"AmericInn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "America s Best Franchising", "Америкас Бест Франчайзинг" ],
+      "value" : "{\"value\":\"America s Best Franchising\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Antalya Turkey", "Анталья Турция" ],
+      "value" : "{\"value\":\"Antalya Turkey\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Apple Inn", "Эппл Инн" ],
+      "value" : "{\"value\":\"Apple Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aqua Hotels and Resorts", "Аква Хотелс энд Резортс" ],
+      "value" : "{\"value\":\"Aqua Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Aqueen Hotels and Resorts", "Аквин Хотелс энд Резортс" ],
+      "value" : "{\"value\":\"Aqueen Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Archipelago International", "Архипелаг Интернэшнл" ],
+      "value" : "{\"value\":\"Archipelago International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arp Hansen Hotel Group", "Арп Хансен Хотел Груп" ],
+      "value" : "{\"value\":\"Arp Hansen Hotel Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Arrowhead Springs San Bernardino California", "Эрроухед Спрингс Сан Бернардино Калифорния" ],
+      "value" : "{\"value\":\"Arrowhead Springs San Bernardino California\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Atlantis Paradise Island", "Атлантис Парадайс Айленд" ],
+      "value" : "{\"value\":\"Atlantis Paradise Island\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Autograph Collection Hotels", "Отаграф Коллекшн Хотелс" ],
+      "value" : "{\"value\":\"Autograph Collection Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Avari Hotels", "Авари Хотелс" ],
+      "value" : "{\"value\":\"Avari Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Azimut Hotels", "Азимут Хотелс" ],
+      "value" : "{\"value\":\"Azimut Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Baglioni Hotels", "Бальони Хотелс" ],
+      "value" : "{\"value\":\"Baglioni Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bahia Principe", "Бахия Принсипе" ],
+      "value" : "{\"value\":\"Bahia Principe\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bali Indonesia", "Бали Индонезия" ],
+      "value" : "{\"value\":\"Bali Indonesia\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "BandB Hotels", "Би энд Би Хотелс" ],
+      "value" : "{\"value\":\"BandB Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Banyan Tree Holdings", "Банян Три Холдингс" ],
+      "value" : "{\"value\":\"Banyan Tree Holdings\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Baymont Inn Suites", "Бэймонт Инн Сьютс" ],
+      "value" : "{\"value\":\"Baymont Inn Suites\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Beaches Resorts", "Бичес Резортс" ],
+      "value" : "{\"value\":\"Beaches Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Belmond", "Бельмонд" ],
+      "value" : "{\"value\":\"Belmond\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Best Value Inn", "Бест Вэлью Инн" ],
+      "value" : "{\"value\":\"Best Value Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Best Western Hotels", "Бест Вестерн Хотелс" ],
+      "value" : "{\"value\":\"Best Western Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bintan Indonesia", "Бинтан Индонезия" ],
+      "value" : "{\"value\":\"Bintan Indonesia\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bloc Hotels", "Блок Хотелс" ],
+      "value" : "{\"value\":\"Bloc Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bluegreen Corporation", "Блюгрин Корпорэйшн" ],
+      "value" : "{\"value\":\"Bluegreen Corporation\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Boscolo Budapest Hotel", "Босколо Будапешт Хотел" ],
+      "value" : "{\"value\":\"Boscolo Budapest Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Boscolo Hotels", "Босколо Хотелс" ],
+      "value" : "{\"value\":\"Boscolo Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bourg Saint Maurice France", "Бур Сент Морис Франс" ],
+      "value" : "{\"value\":\"Bourg Saint Maurice France\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Bowman Biltmore Hotels", "Боуман Билтмор Хотелс" ],
+      "value" : "{\"value\":\"Bowman Biltmore Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Breuil Cervinia Italy", "Брёйль Червиния Италия" ],
+      "value" : "{\"value\":\"Breuil Cervinia Italy\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Brisas Hotels and Resorts", "Брисас Хотелс энд Резортс" ],
+      "value" : "{\"value\":\"Brisas Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ikos Resorts", "Икос Резортс" ],
+      "value" : "{\"value\":\"Ikos Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Intercontinental Hotels Group", "Интерконтинентал Хоутелс Груп" ],
+      "value" : "{\"value\":\"InterContinental Hotels Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Jack Tar Hotels", "Джек Тар Хоутелс" ],
+      "value" : "{\"value\":\"Jack Tar Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Kempinski", "Кемпински" ],
+      "value" : "{\"value\":\"Kempinski\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "La Copa Inns", "Ла Копа Иннс" ],
+      "value" : "{\"value\":\"La Copa Inns\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Leading Hotels of the World", "Лидирующие Хоутелс оф зе Уорлд" ],
+      "value" : "{\"value\":\"Leading Hotels of the World\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Marriott", "Мариотт" ],
+      "value" : "{\"value\":\"Marriott\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Marriott International", "Мариотт Интернешнл" ],
+      "value" : "{\"value\":\"Marriott International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Minor Hotels", "Майнор Хоутелс" ],
+      "value" : "{\"value\":\"Minor Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Mövenpick Hotels and Resorts", "Мовенпик Хоутелс энд Резортс" ],
+      "value" : "{\"value\":\"Mövenpick Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "NH Hotel Group", "НХ Хоутел Груп" ],
+      "value" : "{\"value\":\"NH Hotel Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Oberoi Hotels", "Оберои Хоутелс" ],
+      "value" : "{\"value\":\"Oberoi Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Omni Hotels and Resorts", "Омни Хоутелс энд Резортс" ],
+      "value" : "{\"value\":\"Omni Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Pahang Malaysia", "Паханг Малайзия" ],
+      "value" : "{\"value\":\"Pahang Malaysia\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Pearl Continental Hotels", "Перл Континентал Хоутелс" ],
+      "value" : "{\"value\":\"Pearl Continental Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Phuket Thailand", "Пхукет Таиланд" ],
+      "value" : "{\"value\":\"Phuket Thailand\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Plaza", "Плаза" ],
+      "value" : "{\"value\":\"Plaza\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Radisson", "Рэдиссон" ],
+      "value" : "{\"value\":\"Radisson\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ritz-Carlton", "Ритц-Карлтон" ],
+      "value" : "{\"value\":\"Ritz-Carlton\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Royal Holiday Club", "Роял Холидей Клаб" ],
+      "value" : "{\"value\":\"Royal Holiday Club\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Saint Anne Guadeloupe", "Сент-Анна Гваделупа" ],
+      "value" : "{\"value\":\"Saint Anne Guadeloupe\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Sandman Hotels", "Сэндман Хоутелс" ],
+      "value" : "{\"value\":\"Sandman Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Signature Inn", "Сигнатур Инн" ],
+      "value" : "{\"value\":\"Signature Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Sofitel", "Софи́тель" ],
+      "value" : "{\"value\":\"Sofitel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Starwood Hotels", "Старвуд Хоутелс" ],
+      "value" : "{\"value\":\"Starwood Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Super 8 Hotels", "Супер 8 Хоутелс" ],
+      "value" : "{\"value\":\"Super 8 Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Taj Hotels Resorts and Palaces", "Тадж Хоутелс Резортс энд Паласес" ],
+      "value" : "{\"value\":\"Taj Hotels Resorts and Palaces\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "The Luxury Collection", "Роскошная Коллекция" ],
+      "value" : "{\"value\":\"The Luxury Collection\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Thistle Hotels", "Тистл Хоутелс" ],
+      "value" : "{\"value\":\"Thistle Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Travelodge", "Тревелодж" ],
+      "value" : "{\"value\":\"Travelodge\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Waldorf-Astoria", "Уолдорф-Астория" ],
+      "value" : "{\"value\":\"Waldorf-Astoria\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Wyndham Hotels & Resorts", "Уиндем Хоутелс энд Резортс" ],
+      "value" : "{\"value\":\"Wyndham Hotels & Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Yasmina Morocco", "Ясмина Марокко" ],
+      "value" : "{\"value\":\"Yasmina Morocco\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Cross Country Inn", "Кросс Кантри Инн" ],
+      "value" : "{\"value\":\"Cross Country Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Curio", "Кюрио" ],
+      "value" : "{\"value\":\"Curio\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "D2", "Д2" ],
+      "value" : "{\"value\":\"D2 Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Danubius Hotels Group", "Данубиус Хотелс Групп" ],
+      "value" : "{\"value\":\"Danubius Hotels Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Days Inn China", "Дейс Инн Чайна" ],
+      "value" : "{\"value\":\"Days Inn China\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Days Inns – Canada", "Дейс Иннс – Канада" ],
+      "value" : "{\"value\":\"Days Inns – Canada\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Dedeman Hotels", "Дедеман Хотелс" ],
+      "value" : "{\"value\":\"Dedeman Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Denizen Hotels", "Денижен Хотелс" ],
+      "value" : "{\"value\":\"Denizen Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Diamond Resorts International", "Даймонд Ресортс Интернешнл" ],
+      "value" : "{\"value\":\"Diamond Resorts International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Diamond resorts", "Даймонд Ресортс" ],
+      "value" : "{\"value\":\"Diamond resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Disney Vacation Club", "Дисней Вакейшн Клаб" ],
+      "value" : "{\"value\":\"Disney Vacation Club\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Divan Group", "Диван Групп" ],
+      "value" : "{\"value\":\"Divan Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Dorchester Collection", "Дорчестер Коллекшн" ],
+      "value" : "{\"value\":\"Dorchester Collection\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Dorsett Hospitality International", "Дорсетт Хоспитали ти Интернешнл" ],
+      "value" : "{\"value\":\"Dorsett Hospitality International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "DoubleTree", "ДаблТри" ],
+      "value" : "{\"value\":\"DoubleTree\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Draft EARTH", "ДрафтЭрс" ],
+      "value" : "{\"value\":\"DraftEARTH\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Drury Hotels", "Друри Хотелс" ],
+      "value" : "{\"value\":\"Drury Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Dusit Thani Group", "Дусит Тани Групп" ],
+      "value" : "{\"value\":\"Dusit Thani Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "EasyHotel", "Изай Хотел" ],
+      "value" : "{\"value\":\"EasyHotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Epoque Hotels", "Эпок Хотелс" ],
+      "value" : "{\"value\":\"Epoque Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Eppley Hotel Company", "Эппли Хотел Компани" ],
+      "value" : "{\"value\":\"Eppley Hotel Company\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Esso Motor Hotel", "Эссо Мотор Хотел" ],
+      "value" : "{\"value\":\"Esso Motor Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Etap Hotel", "Этап Хотел" ],
+      "value" : "{\"value\":\"Etap Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Etna Italy", "Этна Италия" ],
+      "value" : "{\"value\":\"Etna Italy\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Eurostars Hotels", "Евростарс Хотелс" ],
+      "value" : "{\"value\":\"Eurostars Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Even Hotels", "Ивен Хотелс" ],
+      "value" : "{\"value\":\"Even Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Evia Greece", "Эвия Греция" ],
+      "value" : "{\"value\":\"Evia Greece\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Exel Inn", "Эксел Инн" ],
+      "value" : "{\"value\":\"Exel Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Express Lancaster Ohio", "Экспресс Ланкастер Огайо" ],
+      "value" : "{\"value\":\"Express Lancaster Ohio\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "FIH Regent Group", "ФИГ Регент Групп" ],
+      "value" : "{\"value\":\"FIH Regent Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "FRHI Hotels and Resorts", "ФРХИ Хотелс энд Ресортс" ],
+      "value" : "{\"value\":\"FRHI Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fairfield Inn", "Фэрфилд Инн" ],
+      "value" : "{\"value\":\"Fairfield Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Family Mart", "Фэмили Март" ],
+      "value" : "{\"value\":\"Family Mart\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "FamilyMart", "ФэмилиМарт" ],
+      "value" : "{\"value\":\"FamilyMart\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Faro Portugal", "Фаро Португалия" ],
+      "value" : "{\"value\":\"Faro Portugal\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Federal Group", "Федераль Групп" ],
+      "value" : "{\"value\":\"Federal Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fiesta Inn", "Фиеста Инн" ],
+      "value" : "{\"value\":\"Fiesta Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fiesta hotels", "Фиеста Хотелс" ],
+      "value" : "{\"value\":\"Fiesta hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Flatotel Hotel", "Флатотель Хотел" ],
+      "value" : "{\"value\":\"Flatotel Hotel\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fontainebleau Resorts", "Фонтенбло Ресортс" ],
+      "value" : "{\"value\":\"Fontainebleau Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Forte Group", "Форте Групп" ],
+      "value" : "{\"value\":\"Forte Group\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Four Seasons Hotels and Resorts", "Четыре Сезона Хотелс энд Ресортс" ],
+      "value" : "{\"value\":\"Four Seasons Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fred Harvey Company", "Фред Харви Компани" ],
+      "value" : "{\"value\":\"Fred Harvey Company\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Fuerte Hotels", "Фуэрте Хотелс" ],
+      "value" : "{\"value\":\"Fuerte Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Ginger Hotels", "Джинджер Хотелс" ],
+      "value" : "{\"value\":\"Ginger Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Glacier Park Company", "Глейшер Парк Компани" ],
+      "value" : "{\"value\":\"Glacier Park Company\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Go Hotels", "Го Хотелс" ],
+      "value" : "{\"value\":\"Go Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Grace Bay Resorts", "Грейс Бэй Ресортс" ],
+      "value" : "{\"value\":\"Grace Bay Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Gran Dorado", "Гран Дорадо" ],
+      "value" : "{\"value\":\"Gran Dorado\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Grange Hotels", "Грэнж Хотелс" ],
+      "value" : "{\"value\":\"Grange Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "GreenTree Inns", "ГринТри Иннс" ],
+      "value" : "{\"value\":\"GreenTree Inns\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Groupe Lucien Barrière", "Групп Люсьен Барьер" ],
+      "value" : "{\"value\":\"Groupe Lucien Barrière\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Groupe du Louvre", "Групп дю Лувр" ],
+      "value" : "{\"value\":\"Groupe du Louvre\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Grupo Habita", "Групо Хабита" ],
+      "value" : "{\"value\":\"Grupo Habita\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Grupo Posadas", "Групо Посадас" ],
+      "value" : "{\"value\":\"Grupo Posadas\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Guilin China", "Гуйлинь Китай" ],
+      "value" : "{\"value\":\"Guilin China\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "H10 Hotels", "H10 Хотелс" ],
+      "value" : "{\"value\":\"H10 Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hampton Inn", "Хэмптон Инн" ],
+      "value" : "{\"value\":\"Hampton Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hampton Inn and Suits", "Хэмптон Инн энд Сьютс" ],
+      "value" : "{\"value\":\"Hampton Inn and Suits\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hampton by Hilton", "Хэмптон бай Хилтон" ],
+      "value" : "{\"value\":\"Hampton by Hilton\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Harbour Plaza Hotel Management", "Харбор Плаза Хотел Менеджмент" ],
+      "value" : "{\"value\":\"Harbour Plaza Hotel Management\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Harbour Plaza Hotels and Resorts", "Харбор Плаза Хотелс энд Ресортс" ],
+      "value" : "{\"value\":\"Harbour Plaza Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hard Rock Hotel and Casino", "Хард Рок Хотел энд Казино" ],
+      "value" : "{\"value\":\"Hard Rock Hotel and Casino\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hard Rock Hotels", "Хард Рок Хотелс" ],
+      "value" : "{\"value\":\"Hard Rock Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Harrah's", "Хэррах'с" ],
+      "value" : "{\"value\":\"Harrah's Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hilton", "Хилтон" ],
+      "value" : "{\"value\":\"Hilton\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hilton Grand Vacations Company", "Хилтон Гранд Вакейшнс Компани" ],
+      "value" : "{\"value\":\"Hilton Grand Vacations Company\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hilton Hotels", "Хилтон Хотелс" ],
+      "value" : "{\"value\":\"Hilton Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hilton Hotels and Resorts", "Хилтон Хотелс энд Ресортс" ],
+      "value" : "{\"value\":\"Hilton Hotels and Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hilton Worldwide", "Хилтон Уорлдвайд" ],
+      "value" : "{\"value\":\"Hilton Worldwide\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "HiltonHilton HotelsHilton Garden Inn", "ХилтонХилтон ХотелсХилтон Гарден Инн" ],
+      "value" : "{\"value\":\"HiltonHilton HotelsHilton Garden Inn\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hiway House", "Хайвей Хаус" ],
+      "value" : "{\"value\":\"Hiway House\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hokkaido Japan", "Хоккайдо Япония" ],
+      "value" : "{\"value\":\"Hokkaido Japan\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Holiday Inn Express", "Холидей Инн Экспресс" ],
+      "value" : "{\"value\":\"Holiday Inn Express\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Holland America Line", "Голландская Америка Лайн" ],
+      "value" : "{\"value\":\"Holland America Line\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Home Inns", "Хоум Иннс" ],
+      "value" : "{\"value\":\"Home Inns\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Home2 Suites by Hilton", "Хоум2 Сьютс бай Хилтон" ],
+      "value" : "{\"value\":\"Home2 Suites by Hilton\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hongkong and Shanghai Hotels", "Гонконг и Шанхай Хотелс" ],
+      "value" : "{\"value\":\"Hongkong and Shanghai Hotels\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Horne s", "Хорн с" ],
+      "value" : "{\"value\":\"Horne s\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hoshino Resorts", "Хошино Ресортс" ],
+      "value" : "{\"value\":\"Hoshino Resorts\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hospitality International", "Хоспиталити Интернешнл" ],
+      "value" : "{\"value\":\"Hospitality International\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel Blackhawk", "Хотел Блэкхок" ],
+      "value" : "{\"value\":\"Hotel Blackhawk\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel Formule 1", "Хотел Формуле 1" ],
+      "value" : "{\"value\":\"Hotel Formule 1\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel Grand Chancellor", "Хотел Гранд Шанселор" ],
+      "value" : "{\"value\":\"Hotel Grand Chancellor\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel Icon", "Хотел Икон" ],
+      "value" : "{\"value\":\"Hotel Icon\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel RL", "Хотел РЛ" ],
+      "value" : "{\"value\":\"Hotel RL\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hotel Shilla", "Хотел Шилла" ],
+      "value" : "{\"value\":\"Hotel Shilla\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Houmt Souk Tunisia", "Хаумт Сук Тунис" ],
+      "value" : "{\"value\":\"Houmt Souk Tunisia\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hyatt", "Хаятт" ],
+      "value" : "{\"value\":\"Hyatt\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hyatt Hotels Corporation", "Хаятт Хотелс Корпорейшн" ],
+      "value" : "{\"value\":\"Hyatt Hotels Corporation\"}"
+    }, {
+      "type" : "synonyms",
+      "rule" : [ "Hyatt HotelsHyatt Place", "Хаятт ХотелсХаятт Плейс" ],
+      "value" : "{\"value\":\"Hyatt HotelsHyatt Place\"}"
+    } ]
   } ],
-  "enabledSystemEntities" : [ "duckling.number", "duckling.time", "duckling.duration", "duckling.phone-number", "duckling.email", "duckling.url" ],
+  "enabledSystemEntities" : [ "pymorphy.geox", "duckling.number", "duckling.time", "duckling.date", "duckling.duration", "duckling.phone-number", "duckling.email", "duckling.url" ],
   "spellerDictionary" : [ ],
   "systemEntities" : [ {
     "name" : "mystem.geo",
@@ -194,7 +1575,7 @@
     "enabled" : false
   }, {
     "name" : "pymorphy.geox",
-    "enabled" : false
+    "enabled" : true
   }, {
     "name" : "pymorphy.orgn",
     "enabled" : false
@@ -221,7 +1602,7 @@
   }, {
     "name" : "duckling.date",
     "version" : "v2",
-    "enabled" : false
+    "enabled" : true
   }, {
     "name" : "duckling.time-of-day",
     "version" : "v2",
